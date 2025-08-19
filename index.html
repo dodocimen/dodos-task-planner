@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Planner</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📌</text></svg>">
+    
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <!-- Bebas Neue Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- SVG Icons -->
+    <svg style="display: none;">
+        <defs>
+            <!-- Star icon for important tasks -->
+            <symbol id="icon-star" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </symbol>
+            
+            <!-- Expand/collapse arrows -->
+            <symbol id="icon-expand-right" viewBox="0 0 24 24">
+                <path d="M10 7l5 5-5 5z"/>
+            </symbol>
+            
+            <symbol id="icon-expand-down" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z"/>
+            </symbol>
+            
+            <!-- Delete/trash icon -->
+            <symbol id="icon-delete" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </symbol>
+            
+            <!-- Restore/undo icon -->
+            <symbol id="icon-restore" viewBox="0 0 24 24">
+                <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>
+            </symbol>
+            
+            <!-- Checkmark for completed tasks -->
+            <symbol id="icon-check" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </symbol>
+            
+            <!-- Close/X for subtask delete -->
+            <symbol id="icon-close" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </symbol>
+            
+            <!-- Warning/alert icon for delete confirmation -->
+            <symbol id="icon-warning" viewBox="0 0 24 24">
+                <path d="M12 2L1 21h22L12 2zm0 3.17L19.83 19H4.17L12 5.17zM11 16h2v2h-2zm0-6h2v4h-2z"/>
+            </symbol>
+            
+            <!-- Sun icon for light mode -->
+            <symbol id="icon-sun" viewBox="0 0 24 24">
+                <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+            </symbol>
+            
+            <!-- Moon icon for dark mode -->
+            <symbol id="icon-moon" viewBox="0 0 24 24">
+                <path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/>
+            </symbol>
+        </defs>
+    </svg>
+</head>
+<body>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+    </div>
+
+    <div class="app">
+        <header class="top-bar">
+            <h1 class="app-title">Dodo's <span class="dynamic-word" id="dynamicWord"></span></h1>
+            <button class="dark-mode-toggle" id="darkModeToggle">
+                <svg class="icon-svg"><use href="#icon-moon"/></svg>
+            </button>
+        </header>
+
+        <div class="app-layout">
+            <!-- Checklist Container -->
+            <main class="checklist-container">
+                <div class="add-task-container">
+                    <input 
+                        type="text" 
+                        class="add-task-input" 
+                        id="addTaskInput"
+                        placeholder="Add a task…"
+                        maxlength="200"
+                    >
+                    <button class="add-task-btn" id="addTaskBtn">Add</button>
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <div class="empty-state" id="emptyState">
+                        <span class="empty-icon">📝</span>
+                        <p>Add your first task</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Graveyard Container -->
+            <aside class="graveyard-container" id="graveyardContainer">
+                <div class="graveyard-header">
+                    <h2 class="graveyard-title">🪦 Graveyard</h2>
+                    <div class="graveyard-badges">
+                        <span class="countdown-badge" id="countdownBadge">--:--</span>
+                        <span class="graveyard-count" id="graveyardCount">0</span>
+                        <button class="graveyard-toggle" id="graveyardToggleBtn" aria-label="Collapse graveyard">
+                            <svg class="icon-svg"><use href="#icon-expand-down"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="graveyard-list" id="graveyardList">
+                    <div class="empty-graveyard" id="emptyGraveyard">
+                        <span class="empty-icon">🙃</span>
+                        <p>No completed tasks yet — time to make one!</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Popup -->
+    <div class="delete-popup-overlay" id="deletePopupOverlay">
+        <div class="delete-popup">
+            <div class="delete-popup-header">
+                <div class="delete-popup-title-group">
+                    <div class="delete-warning-icon">
+                        <svg class="icon-svg"><use href="#icon-warning"/></svg>
+                    </div>
+                    <h3 class="delete-popup-title">Permanently delete?</h3>
+                </div>
+                <button class="delete-popup-close" id="deletePopupClose">
+                    <svg class="icon-svg"><use href="#icon-close"/></svg>
+                </button>
+            </div>
+            <div class="delete-popup-body">
+                <div class="delete-task-preview" id="deleteTaskPreview">
+                    <span class="preview-icon"></span>
+                    <span class="preview-title"></span>
+                </div>
+                <p class="delete-message">This action cannot be undone. The task will be permanently removed.</p>
+                <div class="delete-popup-actions">
+                    <button class="delete-popup-btn confirm-btn" id="deletePopupConfirm">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

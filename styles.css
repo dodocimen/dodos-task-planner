@@ -1,0 +1,1429 @@
+/* CSS Variables for theming */
+:root {
+  --bg-primary: #ffffff;
+  --bg-primary-rgb: 255, 255, 255;
+  --bg-secondary: #f8f9fa00;
+  --bg-tertiary: #f1f3f4;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --border-color: #d2d2d7;
+  --accent-color: #007aff;
+  --accent-hover: #0056cc;
+  --important-color: #ff9500;
+  --success-color: #30d158;
+  --danger-color: #ff3b30;
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --border-radius: 12px;
+  --border-radius-small: 8px;
+  --transition: 0;
+  --graveyard-bg: #f8f9fa;
+  --graveyard-bg-rgb: 248, 249, 250;
+  --graveyard-border: #e5e5e7;
+  --checkbox-border-color: #1a1a1a;
+  
+  /* Light mode gradient colors */
+  --gradient-1: rgba(0, 145, 255, 0);
+
+  /* Scrollbar colors (light) */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.25);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.4);
+  --scrollbar-track: transparent;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1c1c1e;
+  --bg-primary-rgb: 28, 28, 30;
+  --bg-secondary: #04ff0012;
+  --bg-tertiary: #3a3a3c;
+  --text-primary: #ffffff;
+  --text-secondary: #98989d;
+  --border-color: #38383a;
+  --accent-color: #0080ff;
+  --accent-hover: #007bff;
+  --important-color: #00ff08;
+  --success-color: #32d74b;
+  --danger-color: #ff453a;
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --graveyard-bg: #111111a6;
+  --graveyard-bg-rgb: 10, 10, 10;
+  --graveyard-border: #1a1a1a;
+  --checkbox-border-color: #ffffff;
+  
+  /* Dark mode gradient colors */
+  --gradient-1: rgb(0, 94, 255);
+
+  /* Scrollbar colors (dark) */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.32);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.5);
+  --scrollbar-track: transparent;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: var(--transition);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Minimal Scrollbars - WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* Slightly stronger thumb for primary scroll areas */
+.checklist-container::-webkit-scrollbar-thumb,
+.graveyard-list::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+}
+.checklist-container::-webkit-scrollbar-thumb:hover,
+.graveyard-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* Minimal Scrollbars - Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Floating Background Shapes */
+.floating-shapes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.8;
+  animation: float 20s infinite ease-in-out;
+}
+
+.shape-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--gradient-1);
+  top: 0%;
+  left: -5%;
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-15px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(15px) translateX(5px) rotate(270deg);
+  }
+}
+
+.app {
+  max-width: 100vw;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(var(--bg-primary-rgb, 255, 255, 255), 0.9);
+  backdrop-filter: blur(200px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-title {
+  font-size: 28px;
+  font-weight: 400;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 40%, #ffc55a 50%, #ffffff 60%, #ffffff 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGradient 4s ease-in-out infinite;
+}
+
+@keyframes titleGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Light mode app title - black color only */
+[data-theme="light"] .app-title {
+  background: transparent;
+  -webkit-text-fill-color: #000000;
+  background-clip: unset;
+  animation: none;
+}
+
+/* Dark mode app title - white text for dynamic word */
+[data-theme="dark"] .app-title .dynamic-word {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* Dynamic typing cursor for app title */
+.app-title .dynamic-word {
+  position: relative;
+  display: inline-block;
+  min-height: 1em;
+  min-width: 1px;
+  vertical-align: baseline;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: bold
+}
+
+.app-title .dynamic-word::after {
+  content: "|";
+  position: absolute;
+  right: -10px;
+  top: 0;
+  animation: blink 1s steps(2, start) infinite;
+  color: currentColor;
+  -webkit-text-fill-color: currentColor; /* ensure visible over gradient text */
+  font-weight: bold;
+  font-size: 1.1em;
+  line-height: inherit;
+}
+
+/* Cursor color by theme */
+[data-theme="dark"] .app-title .dynamic-word::after {
+  color: #ffffff;
+}
+
+[data-theme="light"] .app-title .dynamic-word::after {
+  color: #000000;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.dark-mode-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.05);
+}
+
+.dark-mode-toggle .icon-svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--text-primary);
+  transition: var(--transition);
+}
+
+.app-layout {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+/* Checklist Container */
+.checklist-container {
+  flex: 1;
+  padding: 32px;
+  background: rgba(var(--bg-primary-rgb, 255, 255, 255), 0.85);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--graveyard-border);
+
+  /* NEW: constrain size + scroll inside */
+  max-height: calc(100vh - 80px); /* full height minus header */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+}
+
+/* Graveyard Container */
+.graveyard-container {
+  width: 320px;
+  background: var(--graveyard-bg);
+  backdrop-filter: blur(50px);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.graveyard-header {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--graveyard-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.graveyard-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.graveyard-toggle .icon-svg { width: 20px; height: 20px; }
+
+.graveyard-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.graveyard-count {
+  background: var(--accent-color);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.graveyard-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.countdown-badge {
+  color: #ff453a;
+  background: rgba(255, 0, 0, 0.097);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+}
+
+.graveyard-list {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
+}
+
+.empty-graveyard {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-graveyard .empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 0px;
+  opacity: 0.6;
+}
+
+.empty-graveyard p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.graveyard-item {
+  background: rgba(0, 0, 0, 0);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-small);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+[data-theme="dark"] .graveyard-item {
+  background: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.graveyard-item:hover {
+  box-shadow: var(--shadow-light);
+  transform: translateY(-1px);
+  border-color: var(--accent-color);
+  background: rgba(2, 166, 255, 0.09);
+}
+
+.graveyard-task-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.graveyard-task-icon {
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "Bebas Neue", sans-serif;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+
+.graveyard-task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.graveyard-task-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graveyard-task-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.graveyard-task-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+
+.add-task-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px;
+  border: none;
+}
+
+.add-task-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--text-secondary);
+  outline: none;
+  font-size: 1.4rem;
+  font-weight: 200;
+  color: var(--text-primary);
+  padding: 8px 0 8px 5px;
+  transition: var(--transition);
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  border-radius: 0;
+
+}
+
+.add-task-input:focus {
+  border-bottom-color: var(--text-primary);
+}
+
+.add-task-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.add-task-btn {
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.add-task-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: visible;   /* let parent handle scrolling */
+  max-height: none;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 32px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 0px;
+}
+
+.task-item {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: grab;
+}
+
+.task-item.dragging {
+  cursor: grabbing;
+}
+
+.task-item:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.task-item.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.task-item.important {
+  border-left: 4px solid var(--important-color);
+  background: linear-gradient(90deg, rgba(0, 255, 140, 0.293) 0%, transparent 45%);
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 6px;
+}
+
+.task-checkbox {
+  width: 25px;
+  height: 25px;
+  border: none; /* remove circle */
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 8px;
+  padding: 0;
+  background: transparent;
+}
+
+.task-checkbox:hover .check-badge-icon { 
+  color: var(--success-color);
+}
+
+.task-checkbox.completed { opacity: 1; }
+
+/* Important task styling - success colors for icon and checkbox */
+.task-item.important .task-icon {
+  color: var(--success-color);
+}
+
+
+/* Hide legacy pseudo checkmark as we use SVG now */
+.task-checkbox.completed::after { content: none; }
+
+/* Replace checkmark with SVG image; only show when completed */
+.check-badge-icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  background: currentColor;
+  -webkit-mask: url('svg/check-badge.svg') no-repeat center / contain;
+  mask: url('svg/check-badge.svg') no-repeat center / contain;
+  color: var(--accent-color);
+}
+
+/* important uses success color */
+.task-item.important .check-badge-icon { color: var(--success-color); }
+
+.task-icon {
+  font-size: 20px;
+  font-family: "Bebas Neue", sans-serif;
+  color: var(--accent-color);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+  margin-right: 8px;
+}
+
+.task-title {
+  flex: 1;
+  max-width: 300px !important;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  padding: 4px 0;
+  transition: var(--transition);
+  /* single-line by default */
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1.5;
+  height: 1.5em; /* one line */
+  resize: none; /* prevent manual resize */
+}
+
+.task-title:focus {
+  border-bottom-color: var(--text-primary);
+}
+
+/* Static display for ellipsis when not editing */
+.task-title-display {
+  flex: 1;
+  max-width: 300px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* ensure ellipsis visible */
+  cursor: text;
+}
+
+/* Hide the textarea when not editing (until focus/expanded) */
+.task-title:not(.expanded) {
+  display: none;
+}
+
+/* Show ellipsis only when not expanded (unfocused/collapsed look) */
+.task-title-display {
+  text-overflow: ellipsis;
+}
+
+/* Multiline expanded state while editing */
+.task-title.expanded {
+  white-space: pre-wrap;       /* wrap long lines */
+  overflow: hidden;            /* no scrollbar; height grows via JS */
+  min-height: 1.5em;
+  height: auto;                /* let JS set exact height */
+  max-width: 300px !important; /* keep limited width even when expanded */
+  width: auto;                 /* let content determine width */
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.task-details {
+  border-top: 1px solid var(--border-color);
+  padding: 16px;
+  background: var(--bg-primary);
+  display: none;
+}
+
+.task-details.expanded {
+  display: block;
+}
+
+.task-notes {
+  margin-bottom: 16px;
+}
+
+.task-notes label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.task-notes textarea {
+  width: 100%;
+  background: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 200;
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.task-notes textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.subtasks {
+padding: 0 16px 16px 16px;
+  margin-top: 0px;
+}
+
+.subtasks label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.subtask-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px;
+  margin-bottom: 10px;
+  background: transparent;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.subtask-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.subtask-checkbox.completed {
+  background: var(--success-color);
+  border-color: var(--success-color);
+  color: white;
+}
+
+.subtask-checkbox.completed::after {
+  content: "✓";
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.subtask-title {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.subtask-item:focus-within {
+  border-bottom-color: var(--text-primary);
+  border-width: 1px;
+}
+
+.subtask-title.completed {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.subtask-delete {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtask-delete:hover {
+  background: var(--danger-color);
+  color: white;
+}
+
+.add-subtask-container {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.add-subtask-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border-color);
+  border-radius: 0;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight:200;
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+}
+
+
+
+.add-subtask-btn {
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.add-subtask-btn:hover {
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Responsive design */
+
+/* Desktop padding */
+@media (min-width: 1200px) {
+  .checklist-container {
+    padding: 100px;
+  }
+}
+
+/* Tablet padding */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .checklist-container {
+    padding: 40px;
+  }
+  
+  .app {
+    max-width: 100%;
+  }
+  
+  .graveyard-container {
+    width: 280px;
+  }
+  
+  .graveyard-header {
+    padding: 20px 16px 16px;
+  }
+  
+  .graveyard-list {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .add-task-input {
+    margin-bottom: 10px;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+  
+  body.hide-top-bar .top-bar { display: none; }
+  body.hide-top-bar .checklist-container { padding-bottom: 300px; }
+
+  .checklist-container {
+    border-right: none;
+    border-bottom: 1px solid var(--graveyard-border);
+    max-height: none;      /* allow full height */
+    overflow-y: auto;      /* keep container scrollable on mobile too */
+    padding-bottom: 100px;
+  }
+  
+  .graveyard-container {
+    width: 100%;
+    max-height: 300px;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top-right-radius: 16px;
+    border-top-left-radius: 16px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  [data-theme="light"] .graveyard-container:not(.collapsed) {
+    background: linear-gradient(125deg, rgba(0, 166, 255, 0.36) 0%, rgba(255, 255, 255, 0.124) 40%, transparent 100%);
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .graveyard-header {
+    padding: 16px 20px;
+  }
+  
+  .graveyard-list {
+    padding: 16px 20px;
+    max-height: 240px;
+    overflow: hidden;
+    transform-origin: top;
+    transform: translateY(0);
+    transition: max-height 300ms ease, transform 300ms ease, opacity 300ms ease;
+    opacity: 1;
+  }
+  
+  .graveyard-container {
+    transition: transform 300ms ease, opacity 300ms ease;
+  }
+
+  /* Collapsed: keep container at bottom with header visible; slide content up */
+  .graveyard-container.collapsed .graveyard-list {
+    max-height: 0;
+    transform: translateY(-8px);
+    opacity: 0.0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .graveyard-container.collapsed {
+    transform: translateY(0);
+    max-height: 120px; /* taller collapsed chrome */
+  }
+  .graveyard-container.collapsed .graveyard-header {
+    padding: 16px 20px; /* more padding when collapsed */
+  }
+  .graveyard-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .graveyard-toggle:hover {
+    background: none;
+    color: var(--text-primary);
+    transform: none;
+  }
+  .graveyard-toggle .icon-svg {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .top-bar {
+    padding: 25px;
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .add-task-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .task-header {
+    padding: 12px;
+  }
+
+  .task-actions {
+    flex-wrap: wrap;
+  }
+
+  .graveyard-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .graveyard-badges { display: flex; align-items: center; gap: 8px; }
+  /* Narrower subtask input on mobile */
+  .add-subtask-input { max-width: 70%; }
+  .graveyard-header { cursor: pointer; }
+}
+
+/* SVG Icons */
+.icon-svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: var(--transition);
+}
+
+/* Make expand arrow bigger */
+.task-btn.expand-btn .icon-svg {
+  width: 35px;
+  height: 35px;
+}
+
+/* Task Action Buttons */
+.task-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-btn:hover {
+  background: none;
+  color: var(--text-primary);
+  transform: none;
+}
+
+.task-btn.important-btn.active {
+  color: var(--important-color);
+}
+
+.task-btn.expand-btn.active {
+  color: var(--accent-color);
+}
+
+.task-btn.delete-btn:hover {
+  color: var(--danger-color);
+}
+
+/* Graveyard Buttons */
+.graveyard-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graveyard-btn:hover {
+  background: none;
+  color: var(--text-primary);
+  transform: none;
+}
+
+.graveyard-btn.restore-btn:hover {
+  color: var(--success-color);
+}
+
+.graveyard-btn.delete-btn:hover {
+  color: var(--danger-color);
+}
+
+/* Subtask Delete Button */
+.subtask-delete {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtask-delete:hover {
+  background: none;
+  color: var(--danger-color);
+}
+
+.subtask-delete .icon-svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Drop target line shown just below hovered task while dragging */
+.task-item.drop-below {
+  position: relative;
+}
+
+.task-item.drop-below::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: 2px;
+}
+
+/* Favorites separator */
+.favorites-separator {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-color) 20%, var(--border-color) 80%, transparent 100%);
+  margin: 16px 0;
+  opacity: 0.6;
+}
+
+/* Drop target line shown just above hovered task while dragging */
+.task-item.drop-above {
+  position: relative;
+}
+
+.task-item.drop-above::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: -1px;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: 2px;
+}
+
+/* Graveyard Tasks - Expiring Soon */
+.graveyard-item.expiring-soon {
+  background: rgba(255, 59, 48, 0.08);
+  border-color: rgba(255, 59, 48, 0.2);
+}
+
+.graveyard-item.expiring-soon .expiring-warning {
+  font-size: 11px;
+  color: #ff453a;
+  font-weight: 500;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+[data-theme="dark"] .graveyard-item.expiring-soon {
+  background: rgba(255, 69, 58, 0.12);
+  border-color: rgba(255, 69, 58, 0.3);
+}
+
+[data-theme="dark"] .graveyard-item.expiring-soon .expiring-warning {
+  color: #ff453a;
+}
+
+/* Nuclear option: Remove ALL possible focus styles from notes and subtask inputs */
+.task-notes textarea:focus,
+.task-notes textarea:focus-visible,
+.task-notes textarea:focus-within,
+.add-subtask-input:focus,
+.add-subtask-input:focus-visible,
+.add-subtask-input:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--text-primary) !important;
+  background-color: transparent !important;
+  border-width: 1px;
+}
+
+/* Override any potential CSS inheritance */
+.task-notes textarea:focus,
+.add-subtask-input:focus {
+  border-color: var(--text-primary) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-width: 1px;
+}
+
+/* Delete Confirmation Popup */
+.delete-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.delete-popup-overlay.show {
+  display: flex;
+}
+
+.delete-popup {
+  background: rgba(239, 68, 68, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(239, 68, 68, 0.3);
+  max-width: 400px;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #ef4444;
+}
+
+.delete-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 20px 24px;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.delete-popup-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.delete-popup-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.delete-popup-header .delete-warning-icon {
+  margin: 0;
+}
+
+.delete-popup-header .delete-warning-icon .icon-svg {
+  width: 28px;
+  height: 28px;
+  color: #ef4444;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+}
+
+.delete-popup-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-popup-close:hover {
+  background: var(--bg-secondary);
+}
+
+.delete-popup-close .icon-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.delete-popup-body {
+  padding: 24px;
+  text-align: center;
+  padding-top: 20px;
+}
+
+
+
+.delete-task-preview {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-icon {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--success-color);
+  font-family: 'Bebas Neue', sans-serif;
+  opacity: 0.9;
+}
+
+.preview-title {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--success-color);
+  font-family: 'Pretendard', sans-serif;
+}
+
+.delete-message {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 25px 0;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.delete-popup-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.delete-popup-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-family: 'Pretendard', sans-serif;
+  min-width: 100px;
+}
+
+
+
+.delete-popup-btn.confirm-btn {
+  background: #ef4444;
+  color: white;
+  border: 1px solid #ef4444;
+}
+
+.delete-popup-btn.confirm-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.3));
+}
+
+.task-item.error {
+  border-color: var(--danger-color);
+}
+
+.task-error-message {
+  color: var(--danger-color);
+  font-size: 0.9rem;
+  padding: 8px 16px 0 16px;
+  margin: 0 0 8px 0;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.task-item.shake {
+  animation: shake 0.6s ease both;
+}
+
+/* Color popover (chat-bubble) */
+.color-popover {
+  position: absolute;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  z-index: 9999;
+}
+.color-popover-inner {
+  display: grid;
+  grid-template-columns: repeat(3, 18px);
+  grid-auto-rows: 18px;
+  gap: 8px;
+}
+.color-option {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.color-option:hover { filter: brightness(1.1); }
+.color-popover-arrow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: rgba(0,0,0,0.6);
+  border-left: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
