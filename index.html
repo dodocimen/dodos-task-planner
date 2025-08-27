@@ -76,7 +76,16 @@
 
     <div class="app">
         <header class="top-bar">
-            <h1 class="app-title">Dodo's <span class="dynamic-word" id="dynamicWord"></span></h1>
+            <h1 class="app-title">
+                <span class="name-container">
+                    <span id="userName" class="user-name" contenteditable="true" spellcheck="false" aria-label="Your name">Stranger</span>
+                    <span id="nameBubble" class="name-chat-bubble" role="note">
+                        Enter your name here ☝️
+                        <span class="chat-arrow"></span>
+                    </span>
+                </span>
+                's <span class="dynamic-word" id="dynamicWord"></span>
+            </h1>
             <button class="dark-mode-toggle" id="darkModeToggle">
                 <svg class="icon-svg"><use href="#icon-moon"/></svg>
             </button>
@@ -93,7 +102,7 @@
                         placeholder="Add a task…"
                         maxlength="200"
                     >
-                    <button class="add-task-btn" id="addTaskBtn">Add</button>
+                    <button class="add-task-btn" id="addTaskBtn">Add Task</button>
                 </div>
 
                 <div class="task-list" id="taskList">

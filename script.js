@@ -4,12 +4,15 @@ class MinimalChecklist {
     this.graveyard = []
     this.taskIdCounter = 1
     this.subtaskIdCounter = 1
+    this.maxNameLength = 24
 
     this.initializeElements()
     this.loadTasks()
     this.loadGraveyard()
     this.bindEvents()
+    this.initializeGraveyardState()
     this.initializeDarkMode()
+    this.initializeName()
     this.scheduleMidnightReset()
     this.startTimeUpdates()
     this.updateCountdown() // Initialize countdown immediately
@@ -25,6 +28,9 @@ class MinimalChecklist {
     this.graveyardList = document.getElementById("graveyardList")
     this.graveyardCount = document.getElementById("graveyardCount")
     this.emptyGraveyard = document.getElementById("emptyGraveyard")
+    // Name UI
+    this.userNameEl = document.getElementById('userName')
+    this.nameBubbleEl = document.getElementById('nameBubble')
   }
 
   bindEvents() {
@@ -70,6 +76,108 @@ class MinimalChecklist {
         if (window.innerWidth <= 768) this.toggleGraveyard()
       })
     }
+
+    // Inline name editing behavior
+    if (this.userNameEl) {
+      // Prevent line breaks
+      this.userNameEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          this.userNameEl.blur()
+        }
+      })
+
+      // Enforce max length while typing
+      this.userNameEl.addEventListener('keydown', (e) => {
+        const controlKey = e.metaKey || e.ctrlKey || e.altKey
+        if (controlKey) return
+        const allowed = new Set(['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Tab'])
+        if (e.key === 'Enter') { e.preventDefault(); this.userNameEl.blur(); return }
+        if (allowed.has(e.key)) return
+        const existing = this.userNameEl.textContent || ''
+        // Account for current selection length
+        let selectionLength = 0
+        const selection = window.getSelection()
+        if (selection && selection.rangeCount > 0) {
+          selectionLength = selection.getRangeAt(0).toString().length
+        }
+        if (existing.length - selectionLength >= this.maxNameLength) {
+          e.preventDefault()
+        }
+      })
+
+      // Sanitize and truncate pasted/typed content
+      this.userNameEl.addEventListener('input', () => {
+        let text = (this.userNameEl.textContent || '')
+        if (text.length > this.maxNameLength) {
+          this.userNameEl.textContent = text.slice(0, this.maxNameLength)
+          this.placeCaretAtEnd(this.userNameEl)
+        }
+      })
+
+      // On focus, hide bubble
+      this.userNameEl.addEventListener('focus', () => {
+        if (this.nameBubbleEl) this.nameBubbleEl.style.display = 'none'
+        // Ensure editing alignment is start
+        this.userNameEl.style.textAlign = 'start'
+      })
+
+      // On blur, validate and persist
+      this.userNameEl.addEventListener('blur', () => {
+        const text = (this.userNameEl.textContent || '').trim()
+        if (text === '') {
+          // Cannot be blank; revert to Stranger and keep bubble visible
+          this.userNameEl.textContent = 'Stranger'
+          if (this.nameBubbleEl) this.nameBubbleEl.style.display = ''
+          localStorage.removeItem('user-name')
+          // Snap view back to start
+          this.userNameEl.style.textAlign = 'start'
+          this.userNameEl.scrollLeft = 0
+          return
+        }
+        // Persist and remove bubble permanently
+        localStorage.setItem('user-name', text)
+        if (this.nameBubbleEl) this.nameBubbleEl.remove()
+        // Snap view back to start after committing
+        this.userNameEl.style.textAlign = 'start'
+        this.userNameEl.scrollLeft = 0
+      })
+
+      // Enforce truncation visually via CSS (already set with max-width and ellipsis)
+      // Also sanitize pasted content to plain text
+      this.userNameEl.addEventListener('paste', (e) => {
+        e.preventDefault()
+        const text = (e.clipboardData || window.clipboardData).getData('text')
+        document.execCommand('insertText', false, text)
+      })
+    }
+  }
+
+  // Place caret at the end of a contenteditable element
+  placeCaretAtEnd(el) {
+    try {
+      const range = document.createRange()
+      range.selectNodeContents(el)
+      range.collapse(false)
+      const sel = window.getSelection()
+      sel.removeAllRanges()
+      sel.addRange(range)
+    } catch (_) { /* no-op */ }
+  }
+
+  initializeGraveyardState() {
+    // On mobile, start with graveyard collapsed by default
+    if (window.innerWidth <= 768) {
+      const graveyardContainer = document.getElementById('graveyardContainer')
+      const toggleBtn = document.getElementById('graveyardToggleBtn')
+      
+      if (graveyardContainer && toggleBtn) {
+        graveyardContainer.classList.add('collapsed')
+        toggleBtn.classList.add('collapsed')
+        const useEl = toggleBtn.querySelector('.icon-svg use')
+        if (useEl) useEl.setAttribute('href', '#icon-expand-right')
+      }
+    }
   }
 
   initializeDarkMode() {
@@ -90,6 +198,19 @@ class MinimalChecklist {
   updateDarkModeIcon(theme) {
     const icon = this.darkModeToggle.querySelector(".icon-svg use")
     icon.setAttribute("href", theme === "dark" ? "#icon-sun" : "#icon-moon")
+  }
+
+  initializeName() {
+    if (!this.userNameEl) return
+    const saved = localStorage.getItem('user-name')
+    if (saved && saved.trim() !== '') {
+      this.userNameEl.textContent = saved.trim()
+      if (this.nameBubbleEl) this.nameBubbleEl.remove()
+    } else {
+      // default Stranger with bubble visible
+      this.userNameEl.textContent = 'Stranger'
+      if (this.nameBubbleEl) this.nameBubbleEl.style.display = ''
+    }
   }
 
   scheduleMidnightReset() {
@@ -339,6 +460,12 @@ class MinimalChecklist {
         if (error) error.remove()
       }
     }
+  }
+
+  // Auto-resize for subtask textarea titles
+  autoResizeSubtaskTitle(el) {
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
   }
 
   collapseTaskTitle(taskId, el) {
@@ -704,32 +831,29 @@ class MinimalChecklist {
                         onclick="app.toggleTaskComplete(${task.id})" aria-label="Complete task">
                   <span class="check-badge-icon" aria-hidden="true"></span>
                 </button>
+                <span class="task-separator">|</span>
                 <span class="task-icon">${task.icon}</span>
                 <span class="task-title-display ${task.completed ? "completed" : ""}"
-                      onclick="app.startEditingTitle(event, ${task.id}, this)">${task.title}</span>
+                      onclick="app.startEditingTitle(event, ${task.id}, this)">${this.escapeHtml(task.title)}</span>
                 <textarea class="task-title ${task.completed ? "completed" : ""}"
                           rows="1"
                           onfocus="app.expandTaskTitle(this)"
                           oninput="app.autoResizeTaskTitle(this)"
                           onblur="app.collapseTaskTitle(${task.id}, this)"
-                          onkeypress="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }">${task.title}</textarea>
+                          onkeypress="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }">${this.escapeHtml(task.title)}</textarea>
                 <div class="task-actions">
                     <button class="task-btn important-btn ${task.important || task.importantColor ? "active" : ""}" 
                             onclick="app.openColorPopover(event, ${task.id})" 
                             title="Pin to top">
                         <svg class="icon-svg"><use href="#icon-star"/></svg>
                     </button>
+                    <span class="task-separator">|</span>
                     <button class="task-btn expand-btn ${task.expanded ? "active" : ""}" 
                             onclick="app.toggleTaskExpanded(${task.id})" 
                             title="Expand">
                         <svg class="icon-svg">
                             <use href="${task.expanded ? '#icon-expand-down' : '#icon-expand-right'}"/>
                         </svg>
-                    </button>
-                    <button class="task-btn delete-btn" 
-                            onclick="app.moveTaskToGraveyard(${task.id})" 
-                            title="Send to graveyard">
-                        <svg class="icon-svg"><use href="#icon-delete"/></svg>
                     </button>
                 </div>
             </div>
@@ -748,10 +872,11 @@ class MinimalChecklist {
                             <div class="subtask-item">
                                 <div class="subtask-checkbox ${subtask.completed ? "completed" : ""}" 
                                      onclick="app.toggleSubtaskComplete(${task.id}, ${subtask.id})"></div>
-                                <input type="text" class="subtask-title ${subtask.completed ? "completed" : ""}" 
-                                       value="${subtask.title}"
-                                       onblur="app.updateSubtaskTitle(${task.id}, ${subtask.id}, this.value)"
-                                       onkeypress="if(event.key==='Enter') this.blur()">
+                                <textarea class="subtask-title ${subtask.completed ? "completed" : ""}"
+                                          rows="1"
+                                          onfocus="app.autoResizeSubtaskTitle(this)"
+                                          oninput="app.autoResizeSubtaskTitle(this)"
+                                          onblur="app.updateSubtaskTitle(${task.id}, ${subtask.id}, this.value)">${this.escapeHtml(subtask.title)}</textarea>
                                 <button class="subtask-delete" 
                                         onclick="app.deleteSubtask(${task.id}, ${subtask.id})">
                                     <svg class="icon-svg"><use href="#icon-close"/></svg>
@@ -890,6 +1015,21 @@ class MinimalChecklist {
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  // Safely escape user-provided text before injecting into HTML templates
+  escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, (ch) => {
+      switch (ch) {
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return ch;
+      }
+    });
   }
 
   initializeDragAndDrop() {
